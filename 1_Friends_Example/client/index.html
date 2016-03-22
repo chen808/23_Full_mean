@@ -1,0 +1,105 @@
+<html ng-app="friends_app">
+<head>
+	<title>Full Mean Demo</title>
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+
+	<script type="text/javascript">
+
+		//  inject the ngRoute dependency in the module.
+	    var friends_app = angular.module('friends_app', []);
+
+
+	    // FACTORY ============================================================
+	    friends_app.factory('FriendFactory', function($http){
+	    	var factory = {};
+	    	var friends = [];
+
+	    	// *** methods below
+
+	    	// callbacks sits and wait for a response.
+
+	    	// Restful syntax: index = get all that object
+	    	factory.index = function(callback){
+	    		// sends a http request to a url of our backend
+	    		// first thing it hits is route (server > config > routes.js)
+
+
+	    		$http.get('/friends').success(function(output){
+	    			// the 'output' data is coming from server > controllers > friends.js
+	    			friends = output;
+	    			
+	    			callback(friends);
+	    		})
+	    	}
+
+
+	    	// Restful syntax: create = add one to that object
+	    	factory.create = function(info, callback){
+	    		friends.push( { name:info.name, age:info.age} );
+	    		//callback(friends); // note the callback!
+	    	}
+
+	    	return factory;
+	    }); // end factory
+
+
+
+
+
+	    // CONTROLLER =========================================================
+	    friends_app.controller('FriendsController', function($scope, FriendFactory){
+
+	    	// this line goes at the top of the controller callback because the minute the controller gets called upon we want to create the $scope.friends array
+	    	// this RUNS IMMEDIATELY WHEN THE PAGE IS FIRST LOADED!
+	    	FriendFactory.index(function(data){
+	    		// console.log(data);
+	    		// console.log("batman");
+	    		$scope.friends = data;
+	    	})
+	    
+	    	// add
+	    	$scope.addfriend = function(){
+	    		// note usage of callbacks
+	    		FriendFactory.create($scope.new_friend, function(){
+	    			// set our $scope.friends variable to whatever is returned
+	    			// from FriendFactory.index
+	    			// in this case it's all the friends.
+	    			$scope.friends = FriendFactory.index();
+	    			// reset add friends fields
+	    			$scope.new_friend = {};
+	    		});
+	    	}
+	    }); // end controller
+
+
+
+	</script>
+
+
+</head>
+
+
+<body ng-controller="FriendsController"><!-- access to the friends controller -->
+
+	<h1>Friends</h1>
+
+	<input type="text" ng-model="filter_name" placeholder="filter">
+	{{ filter_name }}
+
+	<ul>
+		<!-- display friends -->
+		<li ng-repeat="friend in friends | filter: filter_name">
+			{{ friend.name }}, {{ friend.age }}
+		</li>
+	</ul>
+
+	<h1>Add a Friend</h1>
+	<input type="text" ng-model="new_friend.name" placeholder="name">
+	<input type="text" ng-model="new_friend.age" placeholder="age">
+	<!-- addfriend() is a method we are going to make in the angular controller -->
+	<input type="submit" ng-click="addfriend()">
+
+
+</body>
+</html>
