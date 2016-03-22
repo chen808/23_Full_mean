@@ -40,9 +40,11 @@
       // Now let's create a controller with some hardcoded data!
       friends_app.controller('FriendsController', function($scope, FriendFactory) {
 
+        // this immediately runs when page loads
         FriendFactory.index(function(data){
           $scope.friends = data;
         })
+
 
         $scope.addfriend = function(){
           FriendFactory.create($scope.new_friend, function(){
@@ -50,6 +52,10 @@
             $scope.new_friend = {};
           })
         }
+
+
+
+
       }) // END CONTROLLER
 
 

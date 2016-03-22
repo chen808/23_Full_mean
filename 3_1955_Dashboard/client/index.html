@@ -1,0 +1,139 @@
+<html ng-app="dashboard_app">
+<head>
+	<title>1955 Dashboard</title>
+</head>
+  <!-- Angular CDN -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+
+  <script type="text/javascript">
+  		// creating angular module
+  		var dashboard_app = angular.module('dashboard_app', []);
+
+  		// FACTORY ===================================================
+  		dashboard_app.factory('PersonFactory', function($http){
+
+  			var factory = {};
+  			var persons = [];
+
+
+  			factory.index = function(callback){
+  				$http.get('/persons').success(function(output){
+  					persons = output;
+  					callback(persons);
+  				})
+  			}
+
+  			factory.create = function(info, callback){
+  				$http.post('/persons', info).success(function(output){
+  					persons.push({name:info.name});
+  				})
+  			}
+
+  			factory.deletePerson = function(delete_id, callback){
+
+  				$http.get('/remove/'+ delete_id).success(function(output){
+  					persons = output;
+  					callback(persons);
+  				})
+  			}
+
+
+
+
+  			return factory;
+
+  		});
+
+
+
+
+  		// CONTROLLER =====================================================================
+      // Now let's create a controller with some hardcoded data!
+      dashboard_app.controller('PersonController', function($scope, PersonFactory) {
+
+        // this immediately runs when page loads
+        PersonFactory.index(function(data){
+
+          $scope.persons = data;
+        })
+
+
+        // adding person
+        $scope.addPerson = function(){
+        	PersonFactory.create($scope.new_person, function(){
+        		$scope.persons = PersonFactory.index;
+        	})
+        	// clears the form after entering new user
+        	$scope.new_person = {};
+        }
+
+        // deleting person
+        $scope.deletePerson = function(x){
+        	PersonFactory.deletePerson(x, function(data){
+        		$scope.persons = data;
+        		console.log("omg" + data);
+        	});
+        }
+
+
+
+
+
+
+      }) // END CONTROLLER
+
+
+
+
+
+
+  </script>
+
+
+
+<body>
+	<div ng-controller="PersonController">
+		<h1>1955 Dashboard</h1>
+		<h4>Add people who were born on 1955</h4>
+
+
+		<!-- adding name -->
+		<input type="text" ng-model="new_person.name" placeholder="Enter name">
+		<input type="submit" ng-click="addPerson()">
+
+		<!-- Display people who were born on 1955 -->
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Action<th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<!-- looping through users.  this is being called from controller > getUsers -->
+				<tr ng-repeat="x in persons | orderBy:'name'">
+					<td>{{ x.name }}</td>
+					<!-- clicking delete calls the CONTROLLER deleteProduct method -->
+					<td><a href="#" ng-click="deletePerson(x._id)">Delete</td>
+				</tr>
+			</tbody>
+		</table>
+
+
+	</div>
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+

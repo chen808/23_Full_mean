@@ -9,6 +9,7 @@ var Friend = mongoose.model('Friend');
 
 module.exports = (function() {
  return {
+  
   index: function(req, res) {
      Friend.find({}, function(err, results) {
        if(err) {
