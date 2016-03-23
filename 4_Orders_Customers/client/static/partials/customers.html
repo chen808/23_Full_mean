@@ -1,0 +1,37 @@
+
+
+<div ng-controller="CustomerController">
+	<h1>Add a new customer</h1>
+
+	<!-- Add customer here -->
+	<form>
+
+		<div id="dup" ng-show="isDuplicate()">{{dup_msg}}</div>
+		<h3>Customer Name: <input type="text" ng-model="newCustomer.name"><input type="submit" value="Add Customer" ng-click="addCustomer()"></h3>
+
+	</form>
+	
+
+	<!-- Display people who were born on 1955 -->
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Customer Name</th>
+				<th>Created Date</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+
+		<h3>Search names: <input type="text" ng-model="filter_name">  </h3>
+		<tbody>
+			<!-- looping through users.  this is being called from controller > getUsers -->
+			<tr ng-repeat="x in customers | orderBy:'name' | filter:filter_name">
+				<td>{{ x.name }}</td>
+				<td>{{ x.created_at }}</td>
+				<!-- clicking delete calls the CONTROLLER deleteProduct method -->
+				<td><a href="#" ng-click="deleteCustomer(x._id)">Delete</td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>

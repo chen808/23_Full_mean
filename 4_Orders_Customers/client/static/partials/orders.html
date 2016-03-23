@@ -1,0 +1,56 @@
+<div ng-controller="OrderController">
+	<h1>Add a new order</h1>
+
+	<!-- Select a customer -->
+	<h3>Customer:</h3>
+	<select ng-model="newAssign.name" >
+		<option  ng-repeat="i in customers" selected="{{ i }}">{{ i.name }}</option>
+	</select>
+
+	<!-- Select a Product -->
+	<h3>Add a product:</h3>
+	<select ng-model="newAssign.product">
+		<option value="iPhone">iPhone</option>
+		<option value="Xbox360">Xbox360</option>
+		<option value="Laptop">Laptop</option>
+		<option value="Skateboard">Skateboard</option>
+	</select>
+
+	<!-- Select a Quantity -->
+	<h3>Quantity:</h3>
+	<select ng-model="newAssign.quantity">
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+	</select>
+
+	<input type="submit" value="Order" ng-click="addOrder()">
+
+	<!-- looping through users.  this is being called from controller > getUsers -->
+	<input type="text" ng-model="filter_name" placeholder="filter by customer name">
+
+	<!-- Display the orders -->
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Customer Name</th>
+				<th>Product</th>
+				<th>Quantity</th>
+				<th>Date</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr ng-repeat="x in allOrders | orderBy:'Product_name' | filter:filter_name">
+				<td>{{ x.customer_name }}</td>
+				<td>{{ x.product_name }}</td>
+				<td>{{ x.quantity }}</td>
+				<td>{{ x.date }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+
+
+</div>

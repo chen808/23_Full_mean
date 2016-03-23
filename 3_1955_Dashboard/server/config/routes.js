@@ -11,13 +11,13 @@ module.exports = function(app){
 		persons.index(req, res);
 	})
 
+	app.get('/remove/:id', function(req, res){
+		persons.remove(req, res, req.params.id);
+	})
+
 	// POSTS
 	app.post('/persons', function(req, res){
 		persons.create(req, res);
-	})
-
-	app.get('/remove/:id', function(req, res){
-		persons.remove(req, res, req.params.id);
 	})
 
 };

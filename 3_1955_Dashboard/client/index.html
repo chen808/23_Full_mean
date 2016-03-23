@@ -13,6 +13,8 @@
   		dashboard_app.factory('PersonFactory', function($http){
 
   			var factory = {};
+        // creating a empty person's array.  When data is being updated
+        // deleted, and added, this factory array is also being modified.
   			var persons = [];
 
 
@@ -37,9 +39,6 @@
   				})
   			}
 
-
-
-
   			return factory;
 
   		});
@@ -53,7 +52,6 @@
 
         // this immediately runs when page loads
         PersonFactory.index(function(data){
-
           $scope.persons = data;
         })
 
@@ -74,24 +72,14 @@
         		console.log("omg" + data);
         	});
         }
-
-
-
-
-
-
       }) // END CONTROLLER
-
-
-
-
-
 
   </script>
 
 
 
 <body>
+
 	<div ng-controller="PersonController">
 		<h1>1955 Dashboard</h1>
 		<h4>Add people who were born on 1955</h4>
@@ -119,8 +107,6 @@
 				</tr>
 			</tbody>
 		</table>
-
-
 	</div>
 
 
