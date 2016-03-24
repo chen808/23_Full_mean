@@ -45,25 +45,45 @@
 			var factory = {};
 			var stashCurrentUser = [];
 
+
+
+			factory.getCurrentUser = function(callback){
+				callback(stashCurrentUser);
+			}
+
 			factory.stashUser = function(info, callback){
-				stashCurrentUser.push({name:info.name});
-			}			
+				stashCurrentUser.push(info);
+			}
+
+					
 
 
 			return factory;
 		})
 
 		// CONTROLLER ==============================================
-		myApp.controller('SignInController', function($scope, UserFactory){
+		myApp.controller('SignInController', function($scope, UserFactory, $location){
+
+			$scope.currentUser = {};
+
+			UserFactory.getCurrentUser(function(data){
+				$scope.currentUser = data;
+			})
+
+
 
 			$scope.newUser = function(){
-				console.log($scope.newAssign);
-
 				UserFactory.stashUser($scope.newAssign, function(){
 					$scope.currentUser = UserFactory.index;
+					
 				})
 				$scope.newAssign = {}; // clear the form
+				
 			}
+
+
+
+
 
 
 		})
