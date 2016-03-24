@@ -41,6 +41,7 @@
 		// FACTORY (customer) =================================================
 		myApp.factory('CustomerFactory', function($http){
 
+			// will be storing and updating infomation into following variables
 			var factory = {};
 			var customers = [];
 			var orders = {};
@@ -77,9 +78,6 @@
 					callback(orders);
 				})
 			}
-
-
-
 
 			return factory;
 		}) // end Customer factory
@@ -150,28 +148,11 @@
 				$scope.newAssign = {}; // clear the form
 			}
 
-
-
-
-
 		}) // end OrderController
-
-
-
-
-
-
-
-
-
-
 
 	</script>
 
 </head>
-
-
-
 
 <body>
 
