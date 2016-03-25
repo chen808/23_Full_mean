@@ -6,14 +6,6 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
 
-	<!-- Bootstrap CDN -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 	<!-- Angular Code -->
 	<script type="text/javascript">
@@ -44,8 +36,15 @@
 		myApp.factory('UserFactory', function($http){
 			var factory = {};
 			var stashCurrentUser = [];
+			var topics = {};
 
 
+			factory.getAllTopics = function(callback){
+				$http.get('/getTopics').success(function(output){
+					topics = output;
+					callback(topics);
+				})
+			}
 
 			factory.getCurrentUser = function(callback){
 				callback(stashCurrentUser);
@@ -54,41 +53,81 @@
 			factory.stashUser = function(info, callback){
 				stashCurrentUser.push(info);
 			}
+			
 
+			factory.createTopic = function(info, callback){
+				$http.post('/createTopic', info).success(function(output){
+					topics.push({ category:info.category, topic:info.topic, user_name:info.user_name, posts:info.answer_count });
+				})
+			}
+
+			factory.get_a_topic = function(info, callback){
+				$http.get('/getthisTopic/' + info).success(function(output){
+					topic = output;
+					callback(topic);
+				})
+			}
 					
-
-
 			return factory;
-		})
+		});
 
-		// CONTROLLER ==============================================
+		// CONTROLLER (SignInController) ==============================================
 		myApp.controller('SignInController', function($scope, UserFactory, $location){
 
 			$scope.currentUser = {};
+
+			// get all topics
+			UserFactory.getAllTopics(function(data){
+				$scope.allTopics = data;
+			})
+
 
 			UserFactory.getCurrentUser(function(data){
 				$scope.currentUser = data;
 			})
 
 
-
 			$scope.newUser = function(){
 				UserFactory.stashUser($scope.newAssign, function(){
 					$scope.currentUser = UserFactory.index;
-					
 				})
-				$scope.newAssign = {}; // clear the form
-				
+				//$scope.newAssign = {}; // clear the form
 			}
 
 
+			$scope.addTopic = function(){
+				UserFactory.createTopic($scope.newTopic, function(){
+					$scope.topics = UserFactory.getAllTopics
+				})
+				$scope.newTopic = {};
+			}
 
-
-
+			$scope.getATopic = function(x){
+					$location.path('/topic').search({id: x});
+					//$scope.currentopic = data;
+					//console.log($scope.currentopic);
+				
+			}
 
 		})
 
+		// CONTROLLER TOPIC ==================================
+		myApp.controller('TopicController', function($scope, UserFactory, $location, $routeParams){
 
+			topicID = $routeParams.id;
+
+				UserFactory.get_a_topic(topicID, function(data){
+					console.log("batman");
+					console.log(data);
+					$scope.thisTopic = data;
+				})
+		
+
+			
+		})
+
+
+		
 
 	</script>
 
